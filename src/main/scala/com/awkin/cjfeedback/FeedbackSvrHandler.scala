@@ -55,6 +55,7 @@ class FeedbackSvrHandler(val db: MongoDB,
         session write END_SIGN
         */
         session write res
+        session write END_SIGN
 
         logger.info("Message written...");
     }

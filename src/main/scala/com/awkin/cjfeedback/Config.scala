@@ -18,7 +18,7 @@ class Config private {
 
     var pair: JSONObject = new JSONObject()
 
-    private var serverPortDef: Int = 8193
+    private var serverPortDef: Int = 8188
     private var dbDef: String = "awkin"
     private var dbHostDef: String = "localhost"
     private var dbPortDef: Int = 27017

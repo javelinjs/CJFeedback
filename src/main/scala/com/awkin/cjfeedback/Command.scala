@@ -116,7 +116,7 @@ object CmdInvalid {
                 cmd.getString("data") != "" &&
                 cmd.getString("cmd") != ""
         } catch {
-            case _ => false
+            case _ => true
         }
     }
 }
