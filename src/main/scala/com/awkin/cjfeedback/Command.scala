@@ -8,10 +8,19 @@ import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.MongoConnection
 import com.mongodb.casbah.MongoDB
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+import ch.qos.logback.classic.LoggerContext
+import ch.qos.logback.classic.joran.JoranConfigurator
+import ch.qos.logback.core.joran.spi.JoranException
+import ch.qos.logback.core.util.StatusPrinter
+
 import scala.actors._
 import Actor._
 
 class Command(val mongoDB: MongoDB, val loggerService: Actor) {
+    val logger = LoggerFactory.getLogger(classOf[Command])
     private var command: JSONObject = new JSONObject().put("valid", 0)
     private var statusStr: String = _
     /* return to the client */
@@ -20,8 +29,8 @@ class Command(val mongoDB: MongoDB, val loggerService: Actor) {
     private var logData: JSONObject = new JSONObject()
     private val feaExtractor = new FeaExtractor(mongoDB)
 
-    def this (cmd: String, db: MongoDB, logger: Actor) {
-        this(db, logger)
+    def this (cmd: String, db: MongoDB, loggerActor: Actor) {
+        this(db, loggerActor)
         putCmd(cmd)
     }
 
@@ -73,7 +82,9 @@ class Command(val mongoDB: MongoDB, val loggerService: Actor) {
                 }
                 if (success) {
                     /* log the feedback data */
-                    loggerService ! logData
+                    logger.info("ACTION {}", logData.toString)
+                    /* FIXME: why cannot log the data? */
+                    //loggerService ! logData.toString
                     this.statusStr = "success"
                     res.put("success", 1)
                 } else {

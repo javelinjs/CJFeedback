@@ -23,13 +23,15 @@ class LoggerService extends Actor {
     val logger: Logger = LoggerFactory.getLogger(classOf[LoggerService])
     def act() {
         receive {
-            case logData: JSONObject =>
+            case logData: String =>
+                /*
                 logger.debug("log for user:%s, item:%s, action:%s".format(
                                 logData.optString("uid", "null"),
                                 logData.optString("oid", "null"),
                                 logData.optString("action", "null")))
+                                */
                 /* TODO */
-                logger.info("ACTION {}", logData.toString)
+                logger.info("ACTION {}", logData)
             case (caller : Actor, "quit") =>
                 logger.info("ready to quit")
                 exit

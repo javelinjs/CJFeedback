@@ -40,6 +40,9 @@ class FeedbackSvrHandler(val db: MongoDB,
         val SUB_COUNT = 5000
 
         val str = message.toString
+        if (logger.isDebugEnabled) {
+            logger.debug("Receive message: {}", str)
+        }
 
         command.putCmd(str)
         command.run
@@ -57,7 +60,9 @@ class FeedbackSvrHandler(val db: MongoDB,
         session write res
         session write END_SIGN
 
-        logger.info("Message written...");
+        if (logger.isDebugEnabled) {
+            logger.debug("Message written: {}", res)
+        }
     }
 
     /* when new connection established */
