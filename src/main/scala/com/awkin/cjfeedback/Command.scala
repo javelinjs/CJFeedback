@@ -42,14 +42,41 @@ class Command(val mongoDB: MongoDB, val loggerService: Actor) {
             val data = command getJSONObject "data"
             /* extract the item features and other things need to log */
             if (parseIncomeData(data) == true) {
+                val success = 
                 command match {
                 case CmdClick() =>
                     this.logData.put("action", "click")
+                    true
+                case CmdUnClick() =>
+                    this.logData.put("action", "unclick")
+                    true
+                case CmdFavor() =>
+                    this.logData.put("action", "favor")
+                    true
+                case CmdUnFavor() =>
+                    this.logData.put("action", "unfavor")
+                    true
+                case CmdLike() =>
+                    this.logData.put("action", "like")
+                    true
+                case CmdUnLike() =>
+                    this.logData.put("action", "unlike")
+                    true
+                case CmdDislike() =>
+                    this.logData.put("action", "dislike")
+                    true
+                case CmdShare() =>
+                    this.logData.put("action", "share")
+                    true
+                case _ =>
+                    false
+                }
+                if (success) {
                     /* log the feedback data */
                     loggerService ! logData
                     this.statusStr = "success"
                     res.put("success", 1)
-                case _ =>
+                } else {
                     this.statusStr = "Unknown request"
                     res.put("success", 0)
                     res.put("err", statusStr)
@@ -134,6 +161,97 @@ object CmdClick {
     def unapply(cmd: JSONObject) : Boolean = {
         try {
             cmd.getString("cmd") == "click"
+        } catch {
+            case _ => false    
+        }
+    }
+}
+object CmdUnClick {
+    def apply(cmd: JSONObject) : Boolean = {
+        unapply(cmd)
+    }
+
+    def unapply(cmd: JSONObject) : Boolean = {
+        try {
+            cmd.getString("cmd") == "unclick"
+        } catch {
+            case _ => false    
+        }
+    }
+}
+object CmdFavor {
+    def apply(cmd: JSONObject) : Boolean = {
+        unapply(cmd)
+    }
+
+    def unapply(cmd: JSONObject) : Boolean = {
+        try {
+            cmd.getString("cmd") == "favor"
+        } catch {
+            case _ => false    
+        }
+    }
+}
+object CmdUnFavor {
+    def apply(cmd: JSONObject) : Boolean = {
+        unapply(cmd)
+    }
+
+    def unapply(cmd: JSONObject) : Boolean = {
+        try {
+            cmd.getString("cmd") == "unfavor"
+        } catch {
+            case _ => false    
+        }
+    }
+}
+object CmdLike {
+    def apply(cmd: JSONObject) : Boolean = {
+        unapply(cmd)
+    }
+
+    def unapply(cmd: JSONObject) : Boolean = {
+        try {
+            cmd.getString("cmd") == "like"
+        } catch {
+            case _ => false    
+        }
+    }
+}
+object CmdUnLike {
+    def apply(cmd: JSONObject) : Boolean = {
+        unapply(cmd)
+    }
+
+    def unapply(cmd: JSONObject) : Boolean = {
+        try {
+            cmd.getString("cmd") == "unlike"
+        } catch {
+            case _ => false    
+        }
+    }
+}
+object CmdDislike {
+    def apply(cmd: JSONObject) : Boolean = {
+        unapply(cmd)
+    }
+
+    def unapply(cmd: JSONObject) : Boolean = {
+        try {
+            cmd.getString("cmd") == "dislike"
+        } catch {
+            case _ => false    
+        }
+    }
+}
+object CmdShare {
+    def apply(cmd: JSONObject) : Boolean = {
+        unapply(cmd)
+    }
+
+    def unapply(cmd: JSONObject) : Boolean = {
+        try {
+            cmd.getString("cmd") == "share"
         } catch {
             case _ => false    
         }

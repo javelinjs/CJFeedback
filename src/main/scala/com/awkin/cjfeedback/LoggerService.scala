@@ -24,12 +24,12 @@ class LoggerService extends Actor {
     def act() {
         receive {
             case logData: JSONObject =>
-                logger.info("log for user:%s, item:%s, action:%s".format(
+                logger.debug("log for user:%s, item:%s, action:%s".format(
                                 logData.optString("uid", "null"),
                                 logData.optString("oid", "null"),
                                 logData.optString("action", "null")))
                 /* TODO */
-                logger.info(logData.toString)
+                logger.info("ACTION {}", logData.toString)
             case (caller : Actor, "quit") =>
                 logger.info("ready to quit")
                 exit
