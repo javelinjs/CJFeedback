@@ -22,21 +22,21 @@ import Actor._
 class LoggerService extends Actor {
     val logger: Logger = LoggerFactory.getLogger(classOf[LoggerService])
     def act() {
-        receive {
-            case logData: String =>
-                /*
-                logger.debug("log for user:%s, item:%s, action:%s".format(
-                                logData.optString("uid", "null"),
-                                logData.optString("oid", "null"),
-                                logData.optString("action", "null")))
-                                */
-                /* TODO */
-                logger.info("ACTION {}", logData)
-            case (caller : Actor, "quit") =>
-                logger.info("ready to quit")
-                exit
-            case _ =>
-                logger.warn("logger svr receive invalid msg")
+        while(true) {
+            receive {
+                case logData: JSONObject =>
+                    logger.debug("log for user:%s, item:%s, action:%s".format(
+                                    logData.optString("uid", "null"),
+                                    logData.optString("oid", "null"),
+                                    logData.optString("action", "null")))
+                    /* TODO */
+                    logger.info("ACTION {}", logData.toString)
+                case (caller : Actor, "quit") =>
+                    logger.info("ready to quit")
+                    exit
+                case _ =>
+                    logger.warn("logger svr receive invalid msg")
+            }
         }
     }
 }

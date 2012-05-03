@@ -82,9 +82,7 @@ class Command(val mongoDB: MongoDB, val loggerService: Actor) {
                 }
                 if (success) {
                     /* log the feedback data */
-                    logger.info("ACTION {}", logData.toString)
-                    /* FIXME: why cannot log the data? */
-                    //loggerService ! logData.toString
+                    loggerService ! logData
                     this.statusStr = "success"
                     res.put("success", 1)
                 } else {
