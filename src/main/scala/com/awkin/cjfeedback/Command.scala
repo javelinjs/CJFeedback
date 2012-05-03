@@ -120,6 +120,9 @@ class Command(val mongoDB: MongoDB, val loggerService: Actor) {
             val jsonLog = new JSONObject()
             jsonLog.put("oid", itemid)
             jsonLog.put("uid", userid)
+            if (logger.isDebugEnabled) {
+                logger.debug("Features: {}", features.toString)
+            }
             for (feature <- features) {
                 jsonLog.put(feature.key, feature.value)
             }

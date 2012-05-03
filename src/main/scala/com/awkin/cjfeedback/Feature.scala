@@ -16,12 +16,29 @@ import com.mongodb.casbah.MongoConnection
 import com.mongodb.casbah.MongoDB
 
 object FeaDesc {
-    def keys: List[String] = 
-        List("length_title", "length_content")
+    def feaKeys: Map[String, FeaFetcher] = 
+        Map("length_title" -> new IntFeaFetcher("length_title"), 
+            "length_content" -> new IntFeaFetcher("length_content"), 
+            "length_desc" -> new IntFeaFetcher("length_desc"), 
+            "source" -> new StringFeaFetcher("source"))
+}
+
+abstract class FeaFetcher(val key: String) {
+    def fetchFeature(obj: MongoDBObject): String
+}
+class IntFeaFetcher(key: String) extends FeaFetcher(key) {
+    override def fetchFeature(obj: MongoDBObject): String = {
+        obj.getAsOrElse[Int](key, 0).toString
+    }
+}
+class StringFeaFetcher(key: String) extends FeaFetcher(key) {
+    override def fetchFeature(obj: MongoDBObject): String = {
+        obj.getAsOrElse[String](key, "")
+    }
 }
 
 class FeaExtractor(val db: MongoDB) {
-    val feaItemColl = db("fea_item")
+    val feaItemColl = db("feature")
     /*
     val itemColl = db("item")
     val channelColl = db("channel") */
@@ -49,17 +66,20 @@ class FeaExtractor(val db: MongoDB) {
             if (oidValid) {
                 //val field = DBObject("title"->1, "channel"->1)
                 val field = DBObject.empty
-                feaItemColl.findOne(MongoDBObject("_id"->oid), field)
+                feaItemColl.findOne(MongoDBObject("item"->oid), field)
             } else {
                 None
             }
         /* contruct the feature list 
-         * List() if nothing found */
+         * List() if nothing found 
+         * Actually at most one feaItem could be found
+         */
         (List[Feature]() /: feaItemObjOption) { (list, feaItemObj) =>
             list ++ 
             /* get feature according to the FeaDesc setting */
-            (List[Feature]() /: FeaDesc.keys) { (fealist, key) =>
-                val value = feaItemObj.getAsOrElse[String](key, "")
+            (List[Feature]() /: FeaDesc.feaKeys.keys) { (fealist, key) =>
+                val value = FeaDesc.feaKeys(key).fetchFeature(feaItemObj)
+                //val value = feaItemObj.getAsOrElse[String](key, "")
                 fealist ++ List(Feature(key, value))
             }
         }
