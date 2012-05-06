@@ -50,7 +50,7 @@ object Main {
         }
 
         /* thread for log */
-        val loggerService = new LoggerService()
+        val loggerService = new LoggerService(Config.logPath)
         loggerService.start()
 
         val acceptor: IoAcceptor = new NioSocketAcceptor

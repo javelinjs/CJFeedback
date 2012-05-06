@@ -19,8 +19,12 @@ import scala.xml._
 import scala.actors._
 import Actor._
 
-class LoggerService extends Actor {
+class LoggerService(val filename: String) extends Actor {
     val logger: Logger = LoggerFactory.getLogger(classOf[LoggerService])
+    val writer = new FileWriter(filename)
+    //val writer = Source.fromFile(filename)
+    //implicit val codec = scalax.io.Codec.UTF8
+
     def act() {
         while(true) {
             receive {
@@ -29,8 +33,8 @@ class LoggerService extends Actor {
                                     logData.optString("uid", "null"),
                                     logData.optString("oid", "null"),
                                     logData.optString("action", "null")))
-                    /* TODO */
-                    logger.info("ACTION {}", logData.toString)
+                    /* log the action */
+                    writeLogger(logData)
                 case (caller : Actor, "quit") =>
                     logger.info("ready to quit")
                     exit
@@ -38,5 +42,24 @@ class LoggerService extends Actor {
                     logger.warn("logger svr receive invalid msg")
             }
         }
+    }
+    private def writeLogger(logData: JSONObject) {
+        try {
+            writer.write(generateLog(logData))
+            writer.flush
+        } catch {
+            case ex => logger.warn("Fail to write action log: {}", ex.toString)
+        }
+    }
+    private def generateLog(logData: JSONObject) = {
+        "%s,%s,%s,%s,%s,%s,%s\n".format(
+            logData.optString("action", "null"),
+            logData.optString("uid", "-1"),
+            logData.optString("oid", "-1"),
+            logData.optString("source", "null"),
+            logData.optString("length_title", "null"),
+            logData.optString("length_desc", "null"),
+            logData.optString("length_content", "null")
+        )
     }
 }

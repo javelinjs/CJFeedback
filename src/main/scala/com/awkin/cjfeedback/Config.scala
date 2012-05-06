@@ -18,12 +18,13 @@ class Config private {
 
     var pair: JSONObject = new JSONObject()
 
-    private var serverPortDef: Int = 8188
-    private var dbDef: String = "awkin"
-    private var dbHostDef: String = "localhost"
-    private var dbPortDef: Int = 27017
-    private var dbUserDef: String = ""
-    private var dbPwdDef: String = ""
+    private val serverPortDef: Int = 8188
+    private val dbDef: String = "awkin"
+    private val dbHostDef: String = "localhost"
+    private val dbPortDef: Int = 27017
+    private val dbUserDef: String = ""
+    private val dbPwdDef: String = ""
+    private val logPathDef: String = "log/action.log"
 }
 
 object Config {
@@ -41,7 +42,9 @@ object Config {
     def dbPwd = 
         conf.pair.optString("db_pwd", conf.dbPwdDef)
     def serverPort = 
-        conf.pair.optInt("serverPort", conf.serverPortDef)
+        conf.pair.optInt("server_port", conf.serverPortDef)
+    def logPath =
+        conf.pair.optString("log_path", conf.logPathDef)
 
     def readConf(filename: Option[String] = None) {
         val confFile = filename.getOrElse(confFileDef)
