@@ -1,8 +1,11 @@
 package com.awkin.cjfeedback
 
 import java.net.URL
-import java.util.Date
 import java.io._
+import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -21,7 +24,7 @@ import Actor._
 
 class LoggerService(val filename: String) extends Actor {
     val logger: Logger = LoggerFactory.getLogger(classOf[LoggerService])
-    val writer = new FileWriter(filename)
+    val writer = new FileWriter(filename, true) //true means append mode
     //val writer = Source.fromFile(filename)
     //implicit val codec = scalax.io.Codec.UTF8
 
@@ -52,14 +55,17 @@ class LoggerService(val filename: String) extends Actor {
         }
     }
     private def generateLog(logData: JSONObject) = {
-        "%s,%s,%s,%s,%s,%s,%s\n".format(
+        //val sformat = new SimpleDateFormat("yyyy M d HH:mm:ss", Locale.US)
+        //sformat setTimeZone TimeZone.getTimeZone("+0800")
+        "%s,%s,%s,%s,%s,%s,%s,%s\n".format(
             logData.optString("action", "null"),
             logData.optString("uid", "-1"),
             logData.optString("oid", "-1"),
             logData.optString("source", "null"),
             logData.optString("length_title", "null"),
             logData.optString("length_desc", "null"),
-            logData.optString("length_content", "null")
+            logData.optString("length_content", "null"),
+            (new Date()).getTime
         )
     }
 }
