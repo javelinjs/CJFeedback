@@ -53,6 +53,9 @@ class Command(val mongoDB: MongoDB, val loggerService: Actor) {
             if (parseIncomeData(data) == true) {
                 val success = 
                 command match {
+                case CmdShow() =>
+                    this.logData.put("action", "show")
+                    true
                 case CmdClick() =>
                     this.logData.put("action", "click")
                     true
@@ -165,6 +168,19 @@ object CmdValid {
     def unapply(cmd: JSONObject) : Boolean = apply(cmd)
 }
 
+object CmdShow {
+    def apply(cmd: JSONObject) : Boolean = {
+        unapply(cmd)
+    }
+
+    def unapply(cmd: JSONObject) : Boolean = {
+        try {
+            cmd.getString("cmd") == "show"
+        } catch {
+            case _ => false    
+        }
+    }
+}
 object CmdClick {
     def apply(cmd: JSONObject) : Boolean = {
         unapply(cmd)
