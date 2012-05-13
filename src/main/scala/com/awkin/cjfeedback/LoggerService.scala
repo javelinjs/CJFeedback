@@ -62,9 +62,9 @@ class LoggerService(val filename: String) extends Actor {
             logData.optString("uid", "-1"),
             logData.optString("oid", "-1"),
             logData.optString("source", "null"),
-            logData.optString("length_title", "null"),
-            logData.optString("length_desc", "null"),
-            logData.optString("length_content", "null"),
+            logData.optString("length_title", "-1"),
+            logData.optString("length_desc", "-1"),
+            logData.optString("length_content", "-1"),
             (new Date()).getTime
         )
     }
