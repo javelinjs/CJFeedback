@@ -57,11 +57,14 @@ class LoggerService(val filename: String) extends Actor {
     private def generateLog(logData: JSONObject) = {
         //val sformat = new SimpleDateFormat("yyyy M d HH:mm:ss", Locale.US)
         //sformat setTimeZone TimeZone.getTimeZone("+0800")
-        "%s,%s,%s,%s,%s,%s,%s,%s\n".format(
+        "%s,%s,%d,%s,%d,%s,%d,%s,%s,%s,%s\n".format(
             logData.optString("action", "null"),
             logData.optString("uid", "-1"),
+            logData.optString("uid", "-1").hashCode,
             logData.optString("oid", "-1"),
+            logData.optString("oid", "-1").hashCode,
             logData.optString("source", "null"),
+            logData.optString("source", "null").hashCode,
             logData.optString("length_title", "-1"),
             logData.optString("length_desc", "-1"),
             logData.optString("length_content", "-1"),
