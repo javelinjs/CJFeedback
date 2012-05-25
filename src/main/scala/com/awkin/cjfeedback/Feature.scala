@@ -33,7 +33,7 @@ class IntFeaFetcher(key: String) extends FeaFetcher(key) {
 }
 class StringFeaFetcher(key: String) extends FeaFetcher(key) {
     override def fetchFeature(obj: MongoDBObject): String = {
-        obj.getAsOrElse[String](key, "")
+        obj.getAsOrElse[String](key, "").toLowerCase
     }
 }
 
