@@ -41,7 +41,7 @@ fea_joined = JOIN features_distinct BY id, joined BY $0;
                 like BY gid, features_distinct BY id; */
 --following add the features:
 out = FOREACH fea_joined GENERATE (click_num IS NULl ? -1 : 1),
-    uidint, oidint, sourceint, length_title, length_desc, length_content;
+    uidint, sourceint, length_title, length_desc, length_content;
 
 /*DUMP out;*/
 STORE out INTO '$outdir' USING PigStorage(' ');
