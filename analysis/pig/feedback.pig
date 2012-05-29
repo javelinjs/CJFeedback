@@ -59,5 +59,5 @@ out = FOREACH fea_joined_with_max_feas GENERATE
     (float)length_content/max_length_content;
 
 /*DUMP out;*/
-STORE max_feas INTO '$max_feas_out' USING PigStorage(' ');
+STORE max_feas INTO '$max_feas_out' USING PigStorage(',');
 STORE out INTO '$train_out' USING PigStorage(' ');
