@@ -6,6 +6,15 @@ log = LOAD '$input' USING PigStorage(',')
 data = FILTER log BY action != 'null' AND uid != '-1' AND oid != 'null'
         AND source != 'null' AND length_title >= 0 AND length_desc >= 0
         AND length_content >= 0 AND occur_time > 0;
+
+--get max value of features
+data_grouped = GROUP data ALL;
+max_feas = FOREACH data_grouped GENERATE MAX(data.uidint) AS max_uidint,
+            MAX(data.sourceint) AS max_sourceint, 
+            MAX(data.length_title) AS max_length_title,
+            MAX(data.length_desc) AS max_length_desc,
+            MAX(data.length_content) AS max_length_content;
+
 records = FOREACH data GENERATE CONCAT(uid, oid) AS id, 
         action, uidint, oidint, sourceint, length_title, 
         length_desc, length_content, occur_time;
@@ -40,8 +49,15 @@ fea_joined = JOIN features_distinct BY id, joined BY $0;
                 unclick RIGHT OUTER BY gid, 
                 like BY gid, features_distinct BY id; */
 --following add the features:
-out = FOREACH fea_joined GENERATE (click_num IS NULl ? -1 : 1),
-    uidint, sourceint, length_title, length_desc, length_content;
+fea_joined_with_max_feas = CROSS fea_joined, max_feas;
+out = FOREACH fea_joined_with_max_feas GENERATE 
+    (click_num IS NULl ? -1 : 1),
+    (float)uidint/max_uidint, 
+    (float)sourceint/max_sourceint, 
+    (float)length_title/max_length_title, 
+    (float)length_desc/max_length_desc, 
+    (float)length_content/max_length_content;
 
 /*DUMP out;*/
-STORE out INTO '$outdir' USING PigStorage(' ');
+STORE max_feas INTO '$max_feas_out' USING PigStorage(' ');
+STORE out INTO '$train_out' USING PigStorage(' ');
